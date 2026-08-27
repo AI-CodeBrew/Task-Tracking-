@@ -38,12 +38,23 @@ export default async function ProjectPage({
 
   const issues = (issuesRaw ?? []) as unknown as Issue[];
 
+  const { data: attachmentRows } = await supabase
+    .from("attachments")
+    .select("issue_id, issues!inner(project_id)")
+    .eq("issues.project_id", projectId);
+
+  const attachmentCounts: Record<string, number> = {};
+  for (const row of attachmentRows ?? []) {
+    attachmentCounts[row.issue_id] = (attachmentCounts[row.issue_id] ?? 0) + 1;
+  }
+
   return (
     <ProjectWorkspace
       project={project}
       initialIssues={issues}
       members={members}
       currentUserId={user!.id}
+      attachmentCounts={attachmentCounts}
     />
   );
 }

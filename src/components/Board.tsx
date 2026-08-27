@@ -21,12 +21,14 @@ import type { Issue, IssueStatus } from "@/lib/types";
 export default function Board({
   issues,
   projectKey,
+  attachmentCounts,
   onCreate,
   onCardClick,
   onMove,
 }: {
   issues: Issue[];
   projectKey: string;
+  attachmentCounts: Record<string, number>;
   onCreate: (status: IssueStatus, title: string) => void;
   onCardClick: (issue: Issue) => void;
   onMove: (issueId: string, status: IssueStatus, position: number) => void;
@@ -97,6 +99,7 @@ export default function Board({
             status={s.value}
             label={s.label}
             projectKey={projectKey}
+            attachmentCounts={attachmentCounts}
             issues={issues
               .filter((i) => i.status === s.value)
               .sort((a, b) => a.position - b.position)}
@@ -107,7 +110,14 @@ export default function Board({
       </div>
 
       <DragOverlay>
-        {activeIssue && <IssueCardContent issue={activeIssue} projectKey={projectKey} dragging />}
+        {activeIssue && (
+          <IssueCardContent
+            issue={activeIssue}
+            projectKey={projectKey}
+            attachmentCount={attachmentCounts[activeIssue.id] ?? 0}
+            dragging
+          />
+        )}
       </DragOverlay>
     </DndContext>
   );
