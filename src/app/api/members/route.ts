@@ -2,11 +2,17 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 
+const VALID_ROLES = ["owner", "member", "viewer"];
+
 export async function POST(request: Request) {
-  const { projectId, email } = await request.json();
+  const { projectId, email, role = "member" } = await request.json();
 
   if (!projectId || !email) {
     return NextResponse.json({ error: "projectId and email are required." }, { status: 400 });
+  }
+
+  if (!VALID_ROLES.includes(role)) {
+    return NextResponse.json({ error: "Invalid role." }, { status: 400 });
   }
 
   const supabase = await createClient();
@@ -46,7 +52,7 @@ export async function POST(request: Request) {
 
   const { error: insertError } = await admin
     .from("project_members")
-    .insert({ project_id: projectId, user_id: profile.id, role: "member" });
+    .insert({ project_id: projectId, user_id: profile.id, role });
 
   if (insertError) {
     if (insertError.code === "23505") {

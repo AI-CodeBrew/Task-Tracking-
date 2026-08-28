@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import OAuthButtons from "@/components/OAuthButtons";
 import { createClient } from "@/lib/supabase/client";
 
 export default function SignupPage() {
@@ -42,7 +43,7 @@ export default function SignupPage() {
           <p className="text-sm text-slate-500">
             We sent a confirmation link to {email}. Confirm it, then sign in.
           </p>
-          <Link href="/login" className="mt-6 inline-block text-sm font-medium underline">
+          <Link href="/login" className="mt-6 inline-block text-sm font-medium text-indigo-600 underline">
             Back to sign in
           </Link>
         </div>
@@ -56,6 +57,14 @@ export default function SignupPage() {
         <h1 className="mb-1 text-2xl font-semibold text-slate-900">Create an account</h1>
         <p className="mb-6 text-sm text-slate-500">Start tracking issues in minutes</p>
 
+        <OAuthButtons />
+
+        <div className="my-5 flex items-center gap-3">
+          <div className="h-px flex-1 bg-slate-200" />
+          <span className="text-xs text-slate-400">or</span>
+          <div className="h-px flex-1 bg-slate-200" />
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="mb-1 block text-sm font-medium text-slate-700">Full name</label>
@@ -64,7 +73,7 @@ export default function SignupPage() {
               required
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
             />
           </div>
           <div>
@@ -74,7 +83,7 @@ export default function SignupPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
             />
           </div>
           <div>
@@ -85,7 +94,7 @@ export default function SignupPage() {
               minLength={6}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
             />
           </div>
 
@@ -94,7 +103,7 @@ export default function SignupPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700 disabled:opacity-50"
+            className="w-full rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-500 disabled:opacity-50"
           >
             {loading ? "Creating account..." : "Sign up"}
           </button>
@@ -102,7 +111,7 @@ export default function SignupPage() {
 
         <p className="mt-6 text-center text-sm text-slate-500">
           Already have an account?{" "}
-          <Link href="/login" className="font-medium text-slate-900 underline">
+          <Link href="/login" className="font-medium text-indigo-600 underline">
             Sign in
           </Link>
         </p>

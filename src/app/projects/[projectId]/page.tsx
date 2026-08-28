@@ -1,60 +1,22 @@
-import { notFound } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
-import ProjectWorkspace from "@/components/ProjectWorkspace";
-import type { Issue, Project, ProjectMember } from "@/lib/types";
+"use client";
 
-export default async function ProjectPage({
-  params,
-}: {
-  params: Promise<{ projectId: string }>;
-}) {
-  const { projectId } = await params;
-  const supabase = await createClient();
+import Board from "@/components/Board";
+import { useProjectData } from "@/lib/project-context";
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  const { data: project } = await supabase
-    .from("projects")
-    .select("*")
-    .eq("id", projectId)
-    .single<Project>();
-
-  if (!project) notFound();
-
-  const { data: membersRaw } = await supabase
-    .from("project_members")
-    .select("project_id, user_id, role, profiles(*)")
-    .eq("project_id", projectId);
-
-  const members = (membersRaw ?? []) as unknown as ProjectMember[];
-
-  const { data: issuesRaw } = await supabase
-    .from("issues")
-    .select("*, assignee:profiles!issues_assignee_id_fkey(*)")
-    .eq("project_id", projectId)
-    .order("position", { ascending: true });
-
-  const issues = (issuesRaw ?? []) as unknown as Issue[];
-
-  const { data: attachmentRows } = await supabase
-    .from("attachments")
-    .select("issue_id, issues!inner(project_id)")
-    .eq("issues.project_id", projectId);
-
-  const attachmentCounts: Record<string, number> = {};
-  for (const row of attachmentRows ?? []) {
-    attachmentCounts[row.issue_id] = (attachmentCounts[row.issue_id] ?? 0) + 1;
-  }
+export default function BoardPage() {
+  const { filteredIssues, statuses, project, attachmentCounts, handleCreate, setActiveIssue, handleMove, isViewer } =
+    useProjectData();
 
   return (
-    <ProjectWorkspace
-      project={project}
-      initialIssues={issues}
-      members={members}
-      currentUserId={user!.id}
+    <Board
+      issues={filteredIssues}
+      statuses={statuses}
+      projectKey={project.key}
       attachmentCounts={attachmentCounts}
+      onCreate={isViewer ? () => {} : handleCreate}
+      onCardClick={setActiveIssue}
+      onMove={handleMove}
+      readOnly={isViewer}
     />
   );
 }

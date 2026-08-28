@@ -4,33 +4,27 @@ import { useDroppable } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { useState } from "react";
 import IssueCard from "@/components/IssueCard";
-import type { Issue, IssueStatus } from "@/lib/types";
-
-const STATUS_COLOR: Record<IssueStatus, string> = {
-  todo: "bg-slate-400",
-  in_progress: "bg-blue-500",
-  pending: "bg-amber-500",
-  done: "bg-emerald-500",
-};
+import { LABEL_DOT_CLASSES } from "@/lib/labels";
+import type { Issue, ProjectStatus } from "@/lib/types";
 
 export default function Column({
   status,
-  label,
   issues,
   projectKey,
   attachmentCounts,
   onCardClick,
   onCreate,
+  readOnly = false,
 }: {
-  status: IssueStatus;
-  label: string;
+  status: ProjectStatus;
   issues: Issue[];
   projectKey: string;
   attachmentCounts: Record<string, number>;
   onCardClick: (issue: Issue) => void;
   onCreate: (title: string) => void;
+  readOnly?: boolean;
 }) {
-  const { setNodeRef, isOver } = useDroppable({ id: `column-${status}` });
+  const { setNodeRef, isOver } = useDroppable({ id: `column-${status.key}` });
   const [adding, setAdding] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [title, setTitle] = useState("");
@@ -62,9 +56,9 @@ export default function Column({
           >
             <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
-          <span className={`h-2.5 w-2.5 flex-shrink-0 rounded-sm ${STATUS_COLOR[status]}`} />
+          <span className={`h-2.5 w-2.5 flex-shrink-0 rounded-sm ${LABEL_DOT_CLASSES[status.color]}`} />
           <h3 className="truncate text-xs font-bold uppercase tracking-wide text-slate-600">
-            {label}
+            {status.label}
           </h3>
         </button>
         <span className="ml-1 flex-shrink-0 rounded-full bg-slate-200 px-1.5 py-0.5 text-[11px] font-medium text-slate-500">
@@ -87,31 +81,33 @@ export default function Column({
                   issue={issue}
                   projectKey={projectKey}
                   attachmentCount={attachmentCounts[issue.id] ?? 0}
+                  isDone={status.is_done}
                   onClick={() => onCardClick(issue)}
                 />
               ))}
             </div>
           </SortableContext>
 
-          {adding ? (
-            <form onSubmit={handleAdd} className="mt-2">
-              <input
-                autoFocus
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                onBlur={() => !title && setAdding(false)}
-                placeholder="Issue title"
-                className="w-full rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm focus:border-slate-500 focus:outline-none"
-              />
-            </form>
-          ) : (
-            <button
-              onClick={() => setAdding(true)}
-              className="mt-1 rounded-lg px-2 py-1.5 text-left text-sm text-slate-500 hover:bg-slate-200/60"
-            >
-              + New issue
-            </button>
-          )}
+          {!readOnly &&
+            (adding ? (
+              <form onSubmit={handleAdd} className="mt-2">
+                <input
+                  autoFocus
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  onBlur={() => !title && setAdding(false)}
+                  placeholder="Issue title"
+                  className="w-full rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm focus:border-indigo-400 focus:outline-none"
+                />
+              </form>
+            ) : (
+              <button
+                onClick={() => setAdding(true)}
+                className="mt-1 rounded-lg px-2 py-1.5 text-left text-sm text-slate-500 hover:bg-slate-200/60"
+              >
+                + New issue
+              </button>
+            ))}
         </>
       )}
     </div>

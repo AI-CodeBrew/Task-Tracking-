@@ -53,7 +53,7 @@ export default function CreateProjectDialog({
         className={
           variant === "sidebar"
             ? "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-slate-300 hover:bg-slate-800"
-            : "rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700"
+            : "rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500"
         }
       >
         {variant === "sidebar" ? "+ New project" : "New project"}
@@ -73,7 +73,7 @@ export default function CreateProjectDialog({
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
             />
           </div>
           <div>
@@ -85,7 +85,7 @@ export default function CreateProjectDialog({
               onChange={(e) => setKey(e.target.value.toUpperCase())}
               maxLength={6}
               placeholder="Auto-generated from name"
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm uppercase focus:border-slate-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm uppercase focus:border-indigo-500 focus:outline-none"
             />
           </div>
           <div>
@@ -96,7 +96,7 @@ export default function CreateProjectDialog({
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
             />
           </div>
 
@@ -113,7 +113,7 @@ export default function CreateProjectDialog({
             <button
               type="submit"
               disabled={loading}
-              className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:opacity-50"
+              className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500 disabled:opacity-50"
             >
               {loading ? "Creating..." : "Create project"}
             </button>

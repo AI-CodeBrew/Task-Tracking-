@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const PUBLIC_PREFIXES = ["/login", "/signup"];
+const PUBLIC_PREFIXES = ["/login", "/signup", "/forgot-password"];
 
 function isPublicPath(pathname: string) {
   return pathname === "/" || PUBLIC_PREFIXES.some((path) => pathname.startsWith(path));
@@ -51,5 +51,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|api/upload|api/avatar).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|api/upload|api/avatar|auth/callback).*)"],
 };

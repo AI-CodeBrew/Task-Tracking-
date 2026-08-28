@@ -15,26 +15,30 @@ import Column from "@/components/Column";
 import { IssueCardContent } from "@/components/IssueCard";
 import { createClient } from "@/lib/supabase/client";
 import { positionBetween } from "@/lib/position";
-import { ISSUE_STATUSES } from "@/lib/types";
-import type { Issue, IssueStatus } from "@/lib/types";
+import type { Issue, IssueStatus, ProjectStatus } from "@/lib/types";
 
 export default function Board({
   issues,
+  statuses,
   projectKey,
   attachmentCounts,
   onCreate,
   onCardClick,
   onMove,
+  readOnly = false,
 }: {
   issues: Issue[];
+  statuses: ProjectStatus[];
   projectKey: string;
   attachmentCounts: Record<string, number>;
   onCreate: (status: IssueStatus, title: string) => void;
   onCardClick: (issue: Issue) => void;
   onMove: (issueId: string, status: IssueStatus, position: number) => void;
+  readOnly?: boolean;
 }) {
   const supabase = createClient();
-  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 4 } }));
+  const pointerSensor = useSensor(PointerSensor, { activationConstraint: { distance: 4 } });
+  const sensors = useSensors(...(readOnly ? [] : [pointerSensor]));
   const [activeIssue, setActiveIssue] = useState<Issue | null>(null);
 
   function handleDragStart(event: DragStartEvent) {
@@ -53,7 +57,7 @@ export default function Board({
 
     const overIsColumn = overId.startsWith("column-");
     const targetStatus = overIsColumn
-      ? (overId.replace("column-", "") as IssueStatus)
+      ? overId.replace("column-", "")
       : issues.find((i) => i.id === overId)?.status;
     if (!targetStatus) return;
 
@@ -93,18 +97,18 @@ export default function Board({
       onDragEnd={handleDragEnd}
     >
       <div className="flex gap-4 overflow-x-auto pb-4">
-        {ISSUE_STATUSES.map((s) => (
+        {statuses.map((s) => (
           <Column
-            key={s.value}
-            status={s.value}
-            label={s.label}
+            key={s.id}
+            status={s}
             projectKey={projectKey}
             attachmentCounts={attachmentCounts}
             issues={issues
-              .filter((i) => i.status === s.value)
+              .filter((i) => i.status === s.key)
               .sort((a, b) => a.position - b.position)}
             onCardClick={onCardClick}
-            onCreate={(title) => onCreate(s.value, title)}
+            onCreate={(title) => onCreate(s.key, title)}
+            readOnly={readOnly}
           />
         ))}
       </div>
@@ -115,6 +119,7 @@ export default function Board({
             issue={activeIssue}
             projectKey={projectKey}
             attachmentCount={attachmentCounts[activeIssue.id] ?? 0}
+            isDone={statuses.find((s) => s.key === activeIssue.status)?.is_done}
             dragging
           />
         )}

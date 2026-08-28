@@ -3,7 +3,17 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import Avatar from "@/components/Avatar";
+import { LABEL_COLOR_CLASSES } from "@/lib/labels";
 import type { Issue } from "@/lib/types";
+
+function isOverdue(dueDate: string | null, isDone: boolean) {
+  if (!dueDate || isDone) return false;
+  return new Date(dueDate) < new Date(new Date().toDateString());
+}
+
+function formatDueDate(dueDate: string) {
+  return new Date(dueDate).toLocaleDateString(undefined, { month: "short", day: "numeric" });
+}
 
 const PRIORITY_STYLES: Record<string, string> = {
   low: "bg-slate-100 text-slate-600",
@@ -23,11 +33,13 @@ export function IssueCardContent({
   issue,
   projectKey,
   attachmentCount = 0,
+  isDone = false,
   dragging = false,
 }: {
   issue: Issue;
   projectKey: string;
   attachmentCount?: number;
+  isDone?: boolean;
   dragging?: boolean;
 }) {
   const assigneeLabel = issue.assignee ? (issue.assignee.full_name ?? issue.assignee.email) : null;
@@ -49,25 +61,49 @@ export function IssueCardContent({
         </span>
       </div>
 
-      <p className="mb-3 text-sm font-medium leading-snug text-slate-900">{issue.title}</p>
+      <p className="mb-2 text-sm font-medium leading-snug text-slate-900">{issue.title}</p>
+
+      {issue.labels && issue.labels.length > 0 && (
+        <div className="mb-2.5 flex flex-wrap gap-1">
+          {issue.labels.map((l) => (
+            <span
+              key={l.id}
+              className={`rounded border px-1.5 py-0.5 text-[10px] font-medium ${LABEL_COLOR_CLASSES[l.color]}`}
+            >
+              {l.name}
+            </span>
+          ))}
+        </div>
+      )}
 
       <div className="flex items-center justify-between">
-        {attachmentCount > 0 ? (
-          <span className="flex items-center gap-1 text-[11px] text-slate-400">
-            <svg viewBox="0 0 24 24" fill="none" className="h-3.5 w-3.5">
-              <path
-                d="M8 12.5l5.5-5.5a3 3 0 114.2 4.2L10 18.9a5 5 0 01-7-7l7.8-7.8"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            {attachmentCount}
-          </span>
-        ) : (
-          <span />
-        )}
+        <div className="flex items-center gap-2.5">
+          {attachmentCount > 0 && (
+            <span className="flex items-center gap-1 text-[11px] text-slate-400">
+              <svg viewBox="0 0 24 24" fill="none" className="h-3.5 w-3.5">
+                <path
+                  d="M8 12.5l5.5-5.5a3 3 0 114.2 4.2L10 18.9a5 5 0 01-7-7l7.8-7.8"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              {attachmentCount}
+            </span>
+          )}
+          {issue.due_date && (
+            <span
+              className={`rounded px-1.5 py-0.5 text-[10px] font-medium ${
+                isOverdue(issue.due_date, isDone)
+                  ? "bg-red-100 text-red-700"
+                  : "bg-slate-100 text-slate-500"
+              }`}
+            >
+              {formatDueDate(issue.due_date)}
+            </span>
+          )}
+        </div>
         {assigneeLabel && (
           <Avatar url={issue.assignee?.avatar_url} label={assigneeLabel} id={issue.assignee_id ?? ""} />
         )}
@@ -80,11 +116,13 @@ export default function IssueCard({
   issue,
   projectKey,
   attachmentCount,
+  isDone,
   onClick,
 }: {
   issue: Issue;
   projectKey: string;
   attachmentCount?: number;
+  isDone?: boolean;
   onClick: () => void;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
@@ -105,7 +143,7 @@ export default function IssueCard({
       onClick={onClick}
       className={`cursor-grab active:cursor-grabbing ${isDragging ? "opacity-30" : ""}`}
     >
-      <IssueCardContent issue={issue} projectKey={projectKey} attachmentCount={attachmentCount} />
+      <IssueCardContent issue={issue} projectKey={projectKey} attachmentCount={attachmentCount} isDone={isDone} />
     </div>
   );
 }

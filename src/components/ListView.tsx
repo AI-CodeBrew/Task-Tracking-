@@ -1,8 +1,13 @@
 "use client";
 
-import { avatarColor, initials } from "@/lib/avatar";
-import { ISSUE_STATUSES } from "@/lib/types";
-import type { Issue } from "@/lib/types";
+import Avatar from "@/components/Avatar";
+import { LABEL_COLOR_CLASSES } from "@/lib/labels";
+import type { Issue, ProjectStatus } from "@/lib/types";
+
+function isOverdueForStatus(dueDate: string | null, isDone: boolean) {
+  if (!dueDate || isDone) return false;
+  return new Date(dueDate) < new Date(new Date().toDateString());
+}
 
 const PRIORITY_STYLES: Record<string, string> = {
   low: "bg-slate-100 text-slate-600",
@@ -11,23 +16,22 @@ const PRIORITY_STYLES: Record<string, string> = {
   urgent: "bg-red-100 text-red-700",
 };
 
-const STATUS_STYLES: Record<string, string> = {
-  todo: "bg-slate-100 text-slate-600",
-  in_progress: "bg-blue-100 text-blue-700",
-  pending: "bg-amber-100 text-amber-700",
-  done: "bg-green-100 text-green-700",
-};
-
 export default function ListView({
   issues,
+  statuses,
   projectKey,
   onRowClick,
+  selectedIds,
+  onToggleSelect,
 }: {
   issues: Issue[];
+  statuses: ProjectStatus[];
   projectKey: string;
   onRowClick: (issue: Issue) => void;
+  selectedIds?: Set<string>;
+  onToggleSelect?: (id: string) => void;
 }) {
-  const statusLabel = Object.fromEntries(ISSUE_STATUSES.map((s) => [s.value, s.label]));
+  const statusByKey = Object.fromEntries(statuses.map((s) => [s.key, s]));
   const sorted = [...issues].sort((a, b) => b.number - a.number);
 
   if (issues.length === 0) {
@@ -43,10 +47,12 @@ export default function ListView({
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-slate-200 bg-slate-50 text-left text-xs font-medium uppercase tracking-wide text-slate-500">
+            {onToggleSelect && <th className="w-8 px-4 py-2" />}
             <th className="px-4 py-2 w-24">Key</th>
             <th className="px-4 py-2">Title</th>
             <th className="px-4 py-2">Status</th>
             <th className="px-4 py-2">Priority</th>
+            <th className="px-4 py-2">Due</th>
             <th className="px-4 py-2">Assignee</th>
           </tr>
         </thead>
@@ -55,22 +61,51 @@ export default function ListView({
             const assigneeLabel = issue.assignee
               ? (issue.assignee.full_name ?? issue.assignee.email)
               : null;
+            const statusInfo = statusByKey[issue.status];
             return (
               <tr
                 key={issue.id}
                 onClick={() => onRowClick(issue)}
-                className="cursor-pointer border-b border-slate-100 last:border-0 hover:bg-slate-50"
+                className={`cursor-pointer border-b border-slate-100 last:border-0 hover:bg-slate-50 ${
+                  selectedIds?.has(issue.id) ? "bg-indigo-50/60" : ""
+                }`}
               >
+                {onToggleSelect && (
+                  <td className="px-4 py-2.5" onClick={(e) => e.stopPropagation()}>
+                    <input
+                      type="checkbox"
+                      checked={selectedIds?.has(issue.id) ?? false}
+                      onChange={() => onToggleSelect(issue.id)}
+                      className="h-3.5 w-3.5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                    />
+                  </td>
+                )}
                 <td className="px-4 py-2.5 font-mono text-xs text-slate-400">
                   {projectKey}-{issue.number}
                 </td>
-                <td className="px-4 py-2.5 font-medium text-slate-900">{issue.title}</td>
+                <td className="px-4 py-2.5 font-medium text-slate-900">
+                  {issue.title}
+                  {issue.labels && issue.labels.length > 0 && (
+                    <span className="ml-2 inline-flex gap-1">
+                      {issue.labels.map((l) => (
+                        <span
+                          key={l.id}
+                          className={`rounded border px-1 py-0.5 text-[10px] font-medium ${LABEL_COLOR_CLASSES[l.color]}`}
+                        >
+                          {l.name}
+                        </span>
+                      ))}
+                    </span>
+                  )}
+                </td>
                 <td className="px-4 py-2.5">
-                  <span
-                    className={`rounded px-1.5 py-0.5 text-[11px] font-medium ${STATUS_STYLES[issue.status]}`}
-                  >
-                    {statusLabel[issue.status]}
-                  </span>
+                  {statusInfo && (
+                    <span
+                      className={`rounded px-1.5 py-0.5 text-[11px] font-medium ${LABEL_COLOR_CLASSES[statusInfo.color]}`}
+                    >
+                      {statusInfo.label}
+                    </span>
+                  )}
                 </td>
                 <td className="px-4 py-2.5">
                   <span
@@ -80,15 +115,31 @@ export default function ListView({
                   </span>
                 </td>
                 <td className="px-4 py-2.5">
+                  {issue.due_date ? (
+                    <span
+                      className={`rounded px-1.5 py-0.5 text-[11px] font-medium ${
+                        isOverdueForStatus(issue.due_date, statusInfo?.is_done ?? false)
+                          ? "bg-red-100 text-red-700"
+                          : "text-slate-500"
+                      }`}
+                    >
+                      {new Date(issue.due_date).toLocaleDateString(undefined, {
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </span>
+                  ) : (
+                    <span className="text-slate-300">—</span>
+                  )}
+                </td>
+                <td className="px-4 py-2.5">
                   {assigneeLabel ? (
                     <div className="flex items-center gap-2 text-slate-600">
-                      <div
-                        className={`flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-medium text-white ${avatarColor(
-                          issue.assignee_id ?? ""
-                        )}`}
-                      >
-                        {initials(assigneeLabel)}
-                      </div>
+                      <Avatar
+                        url={issue.assignee?.avatar_url}
+                        label={assigneeLabel}
+                        id={issue.assignee_id ?? ""}
+                      />
                       {assigneeLabel}
                     </div>
                   ) : (
