@@ -189,7 +189,7 @@ export default function ProjectShell({ children }: { children: React.ReactNode }
           <select
             onChange={(e) => e.target.value && bulkUpdate({ status: e.target.value })}
             defaultValue=""
-            className="rounded border border-indigo-200 bg-white px-2 py-1 text-xs"
+            className="rounded border border-indigo-200 bg-white px-2 py-1 text-xs text-slate-900"
           >
             <option value="" disabled>
               Set status...
@@ -203,7 +203,7 @@ export default function ProjectShell({ children }: { children: React.ReactNode }
           <select
             onChange={(e) => e.target.value && bulkUpdate({ priority: e.target.value as IssuePriority })}
             defaultValue=""
-            className="rounded border border-indigo-200 bg-white px-2 py-1 text-xs"
+            className="rounded border border-indigo-200 bg-white px-2 py-1 text-xs text-slate-900"
           >
             <option value="" disabled>
               Set priority...
@@ -216,7 +216,7 @@ export default function ProjectShell({ children }: { children: React.ReactNode }
           <select
             onChange={(e) => bulkUpdate({ assignee_id: e.target.value || null })}
             defaultValue=""
-            className="rounded border border-indigo-200 bg-white px-2 py-1 text-xs"
+            className="rounded border border-indigo-200 bg-white px-2 py-1 text-xs text-slate-900"
           >
             <option value="" disabled>
               Assign to...

@@ -289,7 +289,7 @@ export default function IssueModal({
                 setStatus(value);
                 persist({ status: value });
               }}
-              className="w-full rounded-lg border border-slate-300 px-2 py-1.5 text-sm disabled:bg-slate-50 disabled:text-slate-500"
+              className="w-full rounded-lg border border-slate-300 px-2 py-1.5 text-sm text-slate-900 disabled:bg-slate-50 disabled:text-slate-500"
             >
               {projectStatuses.map((s) => (
                 <option key={s.id} value={s.key}>
@@ -308,7 +308,7 @@ export default function IssueModal({
                 setPriority(value);
                 persist({ priority: value });
               }}
-              className="w-full rounded-lg border border-slate-300 px-2 py-1.5 text-sm disabled:bg-slate-50 disabled:text-slate-500"
+              className="w-full rounded-lg border border-slate-300 px-2 py-1.5 text-sm text-slate-900 disabled:bg-slate-50 disabled:text-slate-500"
             >
               {["low", "medium", "high", "urgent"].map((p) => (
                 <option key={p} value={p}>
@@ -327,7 +327,7 @@ export default function IssueModal({
                 setAssigneeId(value);
                 persist({ assignee_id: value || null });
               }}
-              className="w-full rounded-lg border border-slate-300 px-2 py-1.5 text-sm disabled:bg-slate-50 disabled:text-slate-500"
+              className="w-full rounded-lg border border-slate-300 px-2 py-1.5 text-sm text-slate-900 disabled:bg-slate-50 disabled:text-slate-500"
             >
               <option value="">Unassigned</option>
               {members.map((m) => (
@@ -347,7 +347,7 @@ export default function IssueModal({
                 setDueDate(e.target.value);
                 persist({ due_date: e.target.value || null });
               }}
-              className="w-full rounded-lg border border-slate-300 px-2 py-1.5 text-sm disabled:bg-slate-50 disabled:text-slate-500"
+              className="w-full rounded-lg border border-slate-300 px-2 py-1.5 text-sm text-slate-900 disabled:bg-slate-50 disabled:text-slate-500"
             />
           </div>
         </div>
@@ -413,7 +413,7 @@ export default function IssueModal({
             onChange={(e) => setDescription(e.target.value)}
             onBlur={() => !readOnly && description !== (issue.description ?? "") && persist({ description })}
             rows={4}
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-400 focus:outline-none disabled:bg-slate-50"
+            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-indigo-400 focus:outline-none disabled:bg-slate-50"
           />
         </div>
 
@@ -463,7 +463,7 @@ export default function IssueModal({
                         value={newLabelName}
                         onChange={(e) => setNewLabelName(e.target.value)}
                         placeholder="New label"
-                        className="mb-1.5 w-full rounded border border-slate-300 px-1.5 py-1 text-xs focus:border-indigo-400 focus:outline-none"
+                        className="mb-1.5 w-full rounded border border-slate-300 px-1.5 py-1 text-xs text-slate-900 focus:border-indigo-400 focus:outline-none"
                       />
                       <div className="mb-1.5 flex gap-1">
                         {LABEL_COLORS.map((c) => (
@@ -608,7 +608,7 @@ export default function IssueModal({
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
                     placeholder="Write a comment..."
-                    className="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:border-indigo-400 focus:outline-none"
+                    className="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm text-slate-900 focus:border-indigo-400 focus:outline-none"
                   />
                   <button
                     type="submit"

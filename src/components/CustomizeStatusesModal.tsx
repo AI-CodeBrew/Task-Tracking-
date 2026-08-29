@@ -84,7 +84,7 @@ export default function CustomizeStatusesModal({ onClose }: { onClose: () => voi
               <input
                 value={status.label}
                 onChange={(e) => updateStatus(status.id, { label: e.target.value })}
-                className="min-w-0 flex-1 rounded border border-transparent px-1.5 py-1 text-sm hover:border-slate-200 focus:border-indigo-400 focus:outline-none"
+                className="min-w-0 flex-1 rounded border border-transparent px-1.5 py-1 text-sm text-slate-900 hover:border-slate-200 focus:border-indigo-400 focus:outline-none"
               />
 
               <div className="flex gap-1">
@@ -131,7 +131,7 @@ export default function CustomizeStatusesModal({ onClose }: { onClose: () => voi
             value={newLabel}
             onChange={(e) => setNewLabel(e.target.value)}
             placeholder="New status name"
-            className="w-full rounded-lg border border-slate-300 px-2 py-1.5 text-sm focus:border-indigo-400 focus:outline-none"
+            className="w-full rounded-lg border border-slate-300 px-2 py-1.5 text-sm text-slate-900 focus:border-indigo-400 focus:outline-none"
           />
           <div className="flex items-center gap-1">
             {LABEL_COLORS.map((c) => (
@@ -164,7 +164,7 @@ export default function CustomizeStatusesModal({ onClose }: { onClose: () => voi
               <select
                 value={reassignTo}
                 onChange={(e) => setReassignTo(e.target.value)}
-                className="w-full rounded border border-amber-300 bg-white px-2 py-1 text-xs"
+                className="w-full rounded border border-amber-300 bg-white px-2 py-1 text-xs text-slate-900"
               >
                 {statuses
                   .filter((s) => s.id !== pendingDelete.id)

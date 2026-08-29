@@ -99,7 +99,7 @@ export default function SavedViewsMenu({
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="View name"
-                  className="w-full rounded border border-slate-300 px-1.5 py-1 text-xs focus:border-indigo-400 focus:outline-none"
+                  className="w-full rounded border border-slate-300 px-1.5 py-1 text-xs text-slate-900 focus:border-indigo-400 focus:outline-none"
                 />
                 <button
                   type="submit"

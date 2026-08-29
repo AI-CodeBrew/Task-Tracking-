@@ -97,7 +97,7 @@ export default function Column({
                   onChange={(e) => setTitle(e.target.value)}
                   onBlur={() => !title && setAdding(false)}
                   placeholder="Issue title"
-                  className="w-full rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm focus:border-indigo-400 focus:outline-none"
+                  className="w-full rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm text-slate-900 focus:border-indigo-400 focus:outline-none"
                 />
               </form>
             ) : (

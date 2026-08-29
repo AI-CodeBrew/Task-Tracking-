@@ -73,7 +73,7 @@ export default function CreateProjectDialog({
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-indigo-500 focus:outline-none"
             />
           </div>
           <div>
@@ -85,7 +85,7 @@ export default function CreateProjectDialog({
               onChange={(e) => setKey(e.target.value.toUpperCase())}
               maxLength={6}
               placeholder="Auto-generated from name"
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm uppercase focus:border-indigo-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm uppercase text-slate-900 focus:border-indigo-500 focus:outline-none"
             />
           </div>
           <div>
@@ -96,7 +96,7 @@ export default function CreateProjectDialog({
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-indigo-500 focus:outline-none"
             />
           </div>
 

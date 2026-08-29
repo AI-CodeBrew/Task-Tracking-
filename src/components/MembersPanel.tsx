@@ -119,12 +119,12 @@ export default function MembersPanel({
                   placeholder="teammate@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full rounded-lg border border-slate-300 px-2 py-1.5 text-xs focus:border-indigo-400 focus:outline-none"
+                  className="w-full rounded-lg border border-slate-300 px-2 py-1.5 text-xs text-slate-900 focus:border-indigo-400 focus:outline-none"
                 />
                 <select
                   value={role}
                   onChange={(e) => setRole(e.target.value as ProjectRole)}
-                  className="rounded-lg border border-slate-300 bg-white px-1.5 py-1.5 text-xs"
+                  className="rounded-lg border border-slate-300 bg-white px-1.5 py-1.5 text-xs text-slate-900"
                 >
                   <option value="member">member</option>
                   <option value="viewer">viewer</option>

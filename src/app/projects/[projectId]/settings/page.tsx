@@ -63,7 +63,7 @@ export default function ProjectSettingsPage() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             disabled={!isOwner}
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none disabled:bg-slate-50 disabled:text-slate-500"
+            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-indigo-500 focus:outline-none disabled:bg-slate-50 disabled:text-slate-500"
           />
         </div>
         <div className="mb-4">
@@ -73,7 +73,7 @@ export default function ProjectSettingsPage() {
             onChange={(e) => setDescription(e.target.value)}
             disabled={!isOwner}
             rows={3}
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none disabled:bg-slate-50 disabled:text-slate-500"
+            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-indigo-500 focus:outline-none disabled:bg-slate-50 disabled:text-slate-500"
           />
         </div>
         <div className="mb-4">
@@ -111,7 +111,7 @@ export default function ProjectSettingsPage() {
           <input
             value={confirmName}
             onChange={(e) => setConfirmName(e.target.value)}
-            className="mb-3 w-full rounded-lg border border-red-300 bg-white px-3 py-2 text-sm focus:border-red-500 focus:outline-none"
+            className="mb-3 w-full rounded-lg border border-red-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-red-500 focus:outline-none"
           />
           <button
             onClick={handleDelete}
